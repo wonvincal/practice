@@ -56,7 +56,7 @@ public class RectangleIntercept {
 	    		int leftX = Math.max(other.leftX, this.leftX);
 	    		int rightX = Math.min(other.leftX + other.width, this.leftX + this.width);
 	    		int bottomY = Math.max(other.bottomY, this.bottomY);
-	    		int topY = Math.min(other.bottomY + other.height, this.bottomY + other.height);
+	    		int topY = Math.min(other.bottomY + other.height, this.bottomY + this.height);
 	    		return new Rectangle(leftX, bottomY, rightX - leftX, topY - bottomY);
 	    	}
 	    	return NULL_RECTANGLE;

@@ -14,8 +14,11 @@ public class BinaryTreeCheckerTest {
 		node.right = new BinaryTreeNode(4);
 		node.left.left = new BinaryTreeNode(6);
 		
+		assertTrue(BinaryTreeChecker.isSuperBalancedIterative(node));
 		assertTrue(BinaryTreeChecker.isSuperBalanced(node));
 		node.left.left.left = new BinaryTreeNode(7);
 		assertFalse(BinaryTreeChecker.isSuperBalanced(node));
+		assertFalse(BinaryTreeChecker.isSuperBalancedIterative(node));
+		
 	}
 }
