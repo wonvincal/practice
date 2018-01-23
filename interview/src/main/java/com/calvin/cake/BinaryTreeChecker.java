@@ -78,10 +78,47 @@ public class BinaryTreeChecker {
 		return checkSearchTreeSmart(node, Integer.MIN_VALUE, Integer.MAX_VALUE);
 	}
 	
+	public static boolean isValidSearchTreeSmartIterative(BinaryTreeNode node){
+		return checkSearchTreeSmartIterative(node);
+	}
+
 	public static class CurrentValue {
 		int value;
 	}
 
+	
+	public static class NodeWithRangeCheck {
+		BinaryTreeNode node;
+		int lowerBound;
+		int upperBound;
+		static NodeWithRangeCheck of(BinaryTreeNode node, int lowerBound, int upperBound){
+			return new NodeWithRangeCheck(node, lowerBound, upperBound);
+		}
+		NodeWithRangeCheck(BinaryTreeNode node, int lowerBound, int upperBound){
+			this.node = node;
+			this.lowerBound = lowerBound;
+			this.upperBound = upperBound;
+		}
+	}
+	
+	public static boolean checkSearchTreeSmartIterative(BinaryTreeNode node){
+		Stack<NodeWithRangeCheck> stack = new Stack<>();
+		stack.push(NodeWithRangeCheck.of(node, Integer.MIN_VALUE, Integer.MAX_VALUE));
+		while (!stack.isEmpty()){
+			NodeWithRangeCheck current = stack.pop();
+			if (current.node.value < current.lowerBound || current.node.value > current.upperBound){
+				return false;
+			}
+			if (current.node.left != null){
+				stack.push(NodeWithRangeCheck.of(current.node.left, current.lowerBound, current.node.value));
+			}
+			if (current.node.right != null){
+				stack.push(NodeWithRangeCheck.of(current.node.right, current.node.value, current.upperBound));				
+			}
+		}
+		return true;
+	}
+	
 	/**
 	 * I was only able to focus that all nodes on the left of a node must be less than the node.value,
 	 * and all nodes on the right of a node must be greater than the node.value.  However I wasn't able
@@ -273,5 +310,91 @@ public class BinaryTreeChecker {
 			}
 		}
 		return (maxHeight - minHeight) <= 1; 
+	}
+	
+	private static BinaryTreeNode findLargest(BinaryTreeNode node){
+		while (node.right != null){
+			node = node.right;
+		}
+		return node;
+	}
+	
+	public static int findSecondLargestSmart(BinaryTreeNode node){
+		if (node.left == null && node.right == null){
+			throw new IllegalArgumentException("Must contains at least two nodes");
+		}
+		BinaryTreeNode previous = null;
+		while (node != null){
+			if (node.right != null){
+				previous = node;
+				node = node.right;				
+			}
+			else {
+				if (node.left == null){
+					return previous.value;
+				}
+				else {
+					return findLargest(node.left).value;
+				}
+			}
+			
+			// instead of using previous, we can look two level down
+		}
+		throw new RuntimeException();
+	}
+	
+	public static int findSecondLargestSmartTwoLevelDown(BinaryTreeNode node){
+		if (node.left == null && node.right == null){
+			throw new IllegalArgumentException("Must contains at least two nodes");
+		}
+		while (node != null){
+			if (node.right == null && node.left != null){
+				return findLargest(node.left).value;
+			}
+			
+			if (node.right != null && node.right.right == null && node.right.left == null){
+				return node.value;				
+			}
+		}
+		throw new RuntimeException();
+	}
+
+	public static int findSecondLargest(BinaryTreeNode node){
+		if (node.left == null && node.right == null){
+			throw new IllegalArgumentException("Must contains at least two nodes");
+		}
+		
+		// Keep search on the right node
+		// when there is no more right node
+		// 1) if there is a left node, second largest is the current node
+		// 2) if there is no left node, second larget is the previous node
+		Stack<BinaryTreeNode> stack = new Stack<>();
+		stack.push(node);
+		BinaryTreeNode previous = null, current = null;
+		while (!stack.isEmpty()){
+			previous = current;
+			current = stack.pop();
+			if (current.left != null){
+				stack.push(current.left);
+			}
+			if (current.right != null){
+				stack.push(current.right);
+			}
+			else {
+				if (current.left == null){
+					return previous.value;
+				}
+				else {
+					// Once we are here, we should get the rightmost node again
+					BinaryTreeNode secondLargest = current.left;
+					while (secondLargest.right != null){
+						secondLargest = secondLargest.right;
+					}
+					return secondLargest.value;
+				}
+			}
+		}
+		
+		throw new RuntimeException("Reached unexpected logic");
 	}
 }
