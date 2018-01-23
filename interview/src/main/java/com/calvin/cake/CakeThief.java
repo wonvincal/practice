@@ -62,17 +62,36 @@ public class CakeThief {
 	 * @param totalValue
 	 * @param result
 	 */
-	public static void maxDuffelBagValueIterative(CakeType[] cakeTypes, int startIndex, int capacity, int totalValue, Result result){
-		//
+	public static int maxDuffelBagValueIterative(CakeType[] cakeTypes, int startIndex, int capacity, int totalValue){
+		if (capacity <= 0){
+			return 0;
+		}
 		
 		// Maximum value at each weight
-		int max = Integer.MIN_VALUE;
+		int max = Integer.MIN_VALUE;				
 		int[] capacities = new int[capacity + 1];
-		capacities[0] = 1;
-		for (CakeType cakeType : cakeTypes){
-			for (int i = cakeType.value; i < capacities.length; i++){
-				
+//		for (CakeType cakeType : cakeTypes){
+//			if (cakeType.weight == 0 || cakeType.value == 0){
+//				continue;
+//			}
+//			for (int i = cakeType.weight; i < capacities.length; i++){
+//				if (capacities[i - cakeType.weight] != 0 || (i - cakeType.weight) == 0){
+//					capacities[i] = Math.max(capacities[i], capacities[i - cakeType.weight] + cakeType.value);
+//					max = Math.max(capacities[i], max);
+//				}
+//			}
+//		}
+		for (int i = 0; i < capacities.length; i++){
+			for (CakeType cakeType : cakeTypes){
+				if (cakeType.value == 0 || cakeType.weight == 0){
+					throw new RuntimeException();
+				}
+				if (cakeType.weight <= i){
+					capacities[i] = Math.max(capacities[i], capacities[i - cakeType.weight] + cakeType.value);
+					max = Math.max(max, capacities[i]);
+				}
 			}
 		}
+		return max;
 	}
 }

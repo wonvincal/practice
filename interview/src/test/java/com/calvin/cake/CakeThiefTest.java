@@ -14,6 +14,7 @@ public class CakeThiefTest {
 				new CakeType(3, 90),
 				new CakeType(2, 15)
 		};
+		assertEquals(555, CakeThief.maxDuffelBagValueIterative(cakeTypes, 0, 20, 0));
 	
 		assertEquals(555, CakeThief.maxDuffelBagValue(cakeTypes, 20));
 	}
